@@ -146,4 +146,4 @@ Cette application est développée avec amour en utilisant des technologies mode
 
 **[🌊 Consultez la documentation technique pour plus d'informations](docs/)**
 
-*Application en cours de développement - Suivez les progrès sur GitHub!*
+*Made by CoRhino 4 ZoZo*
