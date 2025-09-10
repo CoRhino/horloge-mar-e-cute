@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌊 Horloge des Marées - Prototype Minimaliste</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .app {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .location {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 40px;
+        }
+
+        .clock-wrapper {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 0 auto 40px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 
+                0 2px 20px rgba(0, 0, 0, 0.1),
+                inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+
+        .tide-clock {
+            width: 100%;
+            height: 100%;
+        }
+
+        .clock-ring {
+            fill: none;
+            stroke: #e5e5e5;
+            stroke-width: 1;
+        }
+
+        .tick-major {
+            stroke: #333;
+            stroke-width: 2;
+        }
+
+        .tick-minor {
+            stroke: #ccc;
+            stroke-width: 1;
+        }
+
+        .tide-hand {
+            stroke: #007acc;
+            stroke-width: 3;
+            stroke-linecap: round;
+            transform-origin: 130px 130px;
+            transform: rotate(75deg);
+            transition: transform 0.8s ease;
+        }
+
+        .hand-center {
+            fill: #007acc;
+        }
+
+        .high-marker {
+            fill: #4caf50;
+        }
+
+        .low-marker {
+            fill: #ff9800;
+        }
+
+        .time-label {
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            fill: #666;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+
+        .center-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .height-display {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #007acc;
+            line-height: 1;
+        }
+
+        .trend-display {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .info-strip {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .next-tides {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tide-info {
+            flex: 1;
+            text-align: center;
+        }
+
+        .tide-info:first-child {
+            border-right: 1px solid #eee;
+            padding-right: 20px;
+        }
+
+        .tide-info:last-child {
+            padding-left: 20px;
+        }
+
+        .tide-label {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .tide-time {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .tide-height {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .high-tide {
+            color: #4caf50;
+        }
+
+        .low-tide {
+            color: #ff9800;
+        }
+
+        .weather-strip {
+            background: linear-gradient(135deg, #64b5f6, #42a5f5);
+            color: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .weather-main {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .temp {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .condition {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .weather-details {
+            text-align: right;
+            font-size: 0.8rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .live-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 8px;
+            height: 8px;
+            background: #4caf50;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 480px) {
+            .clock-wrapper {
+                width: 280px;
+                height: 280px;
+                padding: 25px;
+            }
+            
+            .center-display {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .height-display {
+                font-size: 1.4rem;
+            }
+            
+            .next-tides {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .tide-info:first-child {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+                padding-right: 0;
+                padding-bottom: 20px;
+            }
+            
+            .tide-info:last-child {
+                padding-left: 0;
+                padding-top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="live-indicator"></div>
+        
+        <h1 class="title">Marées de Rimouski</h1>
+        <p class="location">Aujourd'hui • 10 septembre 2024</p>
+
+        <div class="clock-wrapper">
+            <svg class="tide-clock" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+                <!-- Cercle principal -->
+                <circle cx="130" cy="130" r="120" class="clock-ring"/>
+                
+                <!-- Graduations -->
+                <g class="tick-marks">
+                    <!-- 12h -->
+                    <line x1="130" y1="20" x2="130" y2="35" class="tick-major"/>
+                    <!-- 3h -->
+                    <line x1="240" y1="130" x2="225" y2="130" class="tick-major"/>
+                    <!-- 6h -->
+                    <line x1="130" y1="240" x2="130" y2="225" class="tick-major"/>
+                    <!-- 9h -->
+                    <line x1="20" y1="130" x2="35" y2="130" class="tick-major"/>
+                    
+                    <!-- Graduations mineures -->
+                    <line x1="215" y1="45" x2="205" y2="55" class="tick-minor"/>
+                    <line x1="215" y1="215" x2="205" y2="205" class="tick-minor"/>
+                    <line x1="45" y1="215" x2="55" y2="205" class="tick-minor"/>
+                    <line x1="45" y1="45" x2="55" y2="55" class="tick-minor"/>
+                </g>
+                
+                <!-- Labels -->
+                <text x="130" y="32" class="time-label">HAUTE</text>
+                <text x="130" y="235" class="time-label">BASSE</text>
+                
+                <!-- Marqueurs -->
+                <circle cx="130" cy="25" r="4" class="high-marker"/>
+                <circle cx="130" cy="235" r="4" class="low-marker"/>
+                
+                <!-- Aiguille -->
+                <line x1="130" y1="130" x2="130" y2="60" class="tide-hand"/>
+                <circle cx="130" cy="130" r="6" class="hand-center"/>
+            </svg>
+            
+            <div class="center-display">
+                <div class="height-display">2.3m</div>
+                <div class="trend-display">Montante</div>
+            </div>
+        </div>
+
+        <div class="info-strip">
+            <div class="next-tides">
+                <div class="tide-info">
+                    <div class="tide-label high-tide">Prochaine Haute</div>
+                    <div class="tide-time">14:32</div>
+                    <div class="tide-height">3.2m</div>
+                </div>
+                <div class="tide-info">
+                    <div class="tide-label low-tide">Prochaine Basse</div>
+                    <div class="tide-time">20:15</div>
+                    <div class="tide-height">0.8m</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="weather-strip">
+            <div class="weather-main">
+                <div>
+                    <div class="temp">4°C</div>
+                    <div class="condition">Nuageux</div>
+                </div>
+            </div>
+            <div class="weather-details">
+                <div>Vent: 15 km/h</div>
+                <div>Vagues: 0.5m</div>
+                <div>Visibilité: 8km</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

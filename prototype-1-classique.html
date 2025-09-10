@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌊 Horloge des Marées - Prototype Classique</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1e40af;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header .location {
+            font-size: 1.2rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .clock-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 20px 0;
+        }
+
+        .tide-clock {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 10px 25px rgba(30, 64, 175, 0.2));
+        }
+
+        .clock-face {
+            fill: none;
+            stroke: #0891b2;
+            stroke-width: 4;
+        }
+
+        .hour-marker {
+            stroke: #64748b;
+            stroke-width: 2;
+        }
+
+        .major-marker {
+            stroke: #1e40af;
+            stroke-width: 3;
+        }
+
+        .tide-hand {
+            stroke: #2563eb;
+            stroke-width: 4;
+            stroke-linecap: round;
+            transform-origin: 200px 200px;
+            transform: rotate(45deg);
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tide-hand-center {
+            fill: #2563eb;
+        }
+
+        .high-tide-marker {
+            fill: #059669;
+            animation: pulse 2s infinite;
+        }
+
+        .low-tide-marker {
+            fill: #dc2626;
+        }
+
+        .hour-label {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            fill: #1e40af;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+
+        .center-info {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(30, 64, 175, 0.1);
+        }
+
+        .current-height {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 5px;
+        }
+
+        .trend {
+            font-size: 0.9rem;
+            color: #2563eb;
+            font-weight: 500;
+        }
+
+        .info-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .next-extreme {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .next-extreme:last-child {
+            border-bottom: none;
+        }
+
+        .extreme-type {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .high {
+            color: #059669;
+        }
+
+        .low {
+            color: #dc2626;
+        }
+
+        .extreme-time {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .extreme-height {
+            color: #64748b;
+        }
+
+        .weather-widget {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .weather-temp {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .weather-desc {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        @media (max-width: 480px) {
+            .clock-container {
+                width: 320px;
+                height: 320px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .center-info {
+                width: 100px;
+                height: 100px;
+                padding: 15px;
+            }
+            
+            .current-height {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌊 Horloge des Marées</h1>
+        <div class="location">
+            📍 Rimouski, QC • 🌤️ 4°C • ⏰ 14:32
+        </div>
+    </div>
+
+    <div class="clock-container">
+        <svg class="tide-clock" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Cercle principal -->
+            <circle cx="200" cy="200" r="180" class="clock-face"/>
+            
+            <!-- Graduations des heures -->
+            <g class="hour-markers">
+                <!-- 12h (Marée Haute) -->
+                <line x1="200" y1="30" x2="200" y2="50" class="major-marker"/>
+                <!-- 3h -->
+                <line x1="370" y1="200" x2="350" y2="200" class="major-marker"/>
+                <!-- 6h (Marée Basse) -->
+                <line x1="200" y1="370" x2="200" y2="350" class="major-marker"/>
+                <!-- 9h -->
+                <line x1="30" y1="200" x2="50" y2="200" class="major-marker"/>
+                
+                <!-- Graduations mineures -->
+                <line x1="327" y1="73" x2="315" y2="85" class="hour-marker"/>
+                <line x1="327" y1="327" x2="315" y2="315" class="hour-marker"/>
+                <line x1="73" y1="327" x2="85" y2="315" class="hour-marker"/>
+                <line x1="73" y1="73" x2="85" y2="85" class="hour-marker"/>
+            </g>
+            
+            <!-- Labels des heures -->
+            <text x="200" y="45" class="hour-label">🌊 HAUTE</text>
+            <text x="355" y="205" class="hour-label">3h</text>
+            <text x="200" y="365" class="hour-label">🌊 BASSE</text>
+            <text x="45" y="205" class="hour-label">9h</text>
+            
+            <!-- Marqueurs spéciaux -->
+            <circle cx="200" cy="40" r="8" class="high-tide-marker"/>
+            <circle cx="200" cy="360" r="8" class="low-tide-marker"/>
+            
+            <!-- Aiguille des marées -->
+            <line x1="200" y1="200" x2="200" y2="80" class="tide-hand"/>
+            <circle cx="200" cy="200" r="10" class="tide-hand-center"/>
+        </svg>
+        
+        <div class="center-info">
+            <div class="current-height">2.3m</div>
+            <div class="trend">↗️ Montante</div>
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <h3 style="margin-bottom: 16px; color: #1e40af;">🌊 Prochaines Marées</h3>
+        
+        <div class="next-extreme">
+            <div class="extreme-type high">
+                ▲ Marée Haute
+            </div>
+            <div>
+                <div class="extreme-time">14:32</div>
+                <div class="extreme-height">3.2m</div>
+            </div>
+        </div>
+        
+        <div class="next-extreme">
+            <div class="extreme-type low">
+                ▼ Marée Basse
+            </div>
+            <div>
+                <div class="extreme-time">20:15</div>
+                <div class="extreme-height">0.8m</div>
+            </div>
+        </div>
+        
+        <div class="weather-widget">
+            <div>
+                <div class="weather-temp">4°C</div>
+                <div class="weather-desc">Nuageux</div>
+            </div>
+            <div style="text-align: right;">
+                <div>💨 15 km/h</div>
+                <div>🌊 0.5m</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

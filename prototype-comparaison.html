@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌊 Prototypes Horloge des Marées - Comparaison</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .prototypes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .prototype-card {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .prototype-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .prototype-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .prototype-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1e40af;
+        }
+
+        .prototype-subtitle {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .preview-container {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #e2e8f0;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-iframe {
+            width: 100%;
+            height: 280px;
+            border: none;
+            border-radius: 8px;
+            transform: scale(0.8);
+            transform-origin: center;
+        }
+
+        .features-list {
+            margin-bottom: 20px;
+        }
+
+        .features-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1e40af;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .feature-icon {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .comparison-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            margin-top: 30px;
+        }
+
+        .comparison-title {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .comparison-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .comparison-item h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #e0e7ff;
+        }
+
+        .comparison-item p {
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .prototypes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .preview-iframe {
+                transform: scale(0.7);
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌊 Prototypes Horloge des Marées</h1>
+            <p>Trois variations de design pour votre application de marées</p>
+            <p style="font-size: 1rem; opacity: 0.8;">Basé sur la documentation technique complète • Rimouski, Québec</p>
+        </div>
+
+        <div class="prototypes-grid">
+            <!-- Prototype 1: Classique -->
+            <div class="prototype-card">
+                <div class="prototype-header">
+                    <h3 class="prototype-title">🌊 Classique Océan</h3>
+                    <p class="prototype-subtitle">Style traditionnel et familier</p>
+                </div>
+                
+                <div class="preview-container">
+                    <iframe src="prototype-1-classique.html" class="preview-iframe"></iframe>
+                </div>
+                
+                <div class="features-list">
+                    <h4 class="features-title">✨ Caractéristiques</h4>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Interface claire et lisible
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Couleurs bleu océan apaisantes
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Informations bien organisées
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Style familier et professionnel
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Animations subtiles et élégantes
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="prototype-1-classique.html" target="_blank" class="btn btn-primary">
+                        🔍 Voir en détail
+                    </a>
+                </div>
+            </div>
+
+            <!-- Prototype 2: Moderne -->
+            <div class="prototype-card">
+                <div class="prototype-header">
+                    <h3 class="prototype-title">🚀 Moderne Sombre</h3>
+                    <p class="prototype-subtitle">Design contemporain et techno</p>
+                </div>
+                
+                <div class="preview-container">
+                    <iframe src="prototype-2-moderne.html" class="preview-iframe"></iframe>
+                </div>
+                
+                <div class="features-list">
+                    <h4 class="features-title">✨ Caractéristiques</h4>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Thème sombre moderne
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Effets de lumière et gradients
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Interface type application mobile
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Animations fluides et dynamiques
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Style "gaming" et high-tech
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="prototype-2-moderne.html" target="_blank" class="btn btn-primary">
+                        🔍 Voir en détail
+                    </a>
+                </div>
+            </div>
+
+            <!-- Prototype 3: Minimaliste -->
+            <div class="prototype-card">
+                <div class="prototype-header">
+                    <h3 class="prototype-title">✨ Minimaliste</h3>
+                    <p class="prototype-subtitle">Épuré et élégant</p>
+                </div>
+                
+                <div class="preview-container">
+                    <iframe src="prototype-3-minimaliste.html" class="preview-iframe"></iframe>
+                </div>
+                
+                <div class="features-list">
+                    <h4 class="features-title">✨ Caractéristiques</h4>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Design épuré et zen
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Focus sur l'essentiel
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Typographie soignée
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Couleurs douces et naturelles
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Style Apple/iOS inspired
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="prototype-3-minimaliste.html" target="_blank" class="btn btn-primary">
+                        🔍 Voir en détail
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison-section">
+            <h3 class="comparison-title">🎯 Comparaison des Styles</h3>
+            <div class="comparison-grid">
+                <div class="comparison-item">
+                    <h4>🌊 Classique Océan</h4>
+                    <p><strong>Pour qui :</strong> Utilisateurs traditionnels, pêcheurs expérimentés, usage professionnel</p>
+                    <p><strong>Avantages :</strong> Familier, lisible, confiance, données bien organisées</p>
+                </div>
+                <div class="comparison-item">
+                    <h4>🚀 Moderne Sombre</h4>
+                    <p><strong>Pour qui :</strong> Jeunes utilisateurs, passionnés tech, usage nocturne</p>
+                    <p><strong>Avantages :</strong> Tendance, immersif, économie batterie, interface gaming</p>
+                </div>
+                <div class="comparison-item">
+                    <h4>✨ Minimaliste</h4>
+                    <p><strong>Pour qui :</strong> Usage quotidien, consultation rapide, utilisateurs Apple</p>
+                    <p><strong>Avantages :</strong> Épuré, focus, élégant, distraction minimale</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

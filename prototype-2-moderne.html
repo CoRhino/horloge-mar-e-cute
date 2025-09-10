@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌊 Horloge des Marées - Prototype Moderne</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid #475569;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .location-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-top: 10px;
+        }
+
+        .clock-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            max-width: 380px;
+            margin: 0 auto 30px;
+            background: radial-gradient(circle, #1e293b 0%, #0f172a 70%);
+            border-radius: 50%;
+            padding: 20px;
+            border: 2px solid #334155;
+            box-shadow: 
+                0 0 50px rgba(96, 165, 250, 0.3),
+                inset 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .tide-clock {
+            width: 100%;
+            height: 100%;
+        }
+
+        .clock-face {
+            fill: none;
+            stroke: url(#gradient1);
+            stroke-width: 3;
+        }
+
+        .hour-dots {
+            fill: #475569;
+        }
+
+        .major-dots {
+            fill: #60a5fa;
+        }
+
+        .tide-hand {
+            stroke: url(#handGradient);
+            stroke-width: 4;
+            stroke-linecap: round;
+            transform-origin: 190px 190px;
+            transform: rotate(45deg);
+            filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.6));
+        }
+
+        .tide-hand-center {
+            fill: url(#handGradient);
+            filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.8));
+        }
+
+        .high-tide-marker {
+            fill: #34d399;
+            filter: drop-shadow(0 0 4px #34d399);
+            animation: glow 2s infinite alternate;
+        }
+
+        .low-tide-marker {
+            fill: #fbbf24;
+            filter: drop-shadow(0 0 4px #fbbf24);
+        }
+
+        .tide-wave {
+            stroke: #06b6d4;
+            stroke-width: 2;
+            fill: none;
+            opacity: 0.6;
+            animation: wave 3s infinite ease-in-out;
+        }
+
+        .center-info {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 20px;
+            border-radius: 50%;
+            width: 140px;
+            height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid #334155;
+        }
+
+        .current-height {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        .trend {
+            font-size: 1rem;
+            color: #60a5fa;
+            font-weight: 500;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #475569;
+            backdrop-filter: blur(10px);
+        }
+
+        .card h3 {
+            color: #60a5fa;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .extremes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .extreme-item {
+            text-align: center;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid #475569;
+        }
+
+        .extreme-type {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .high {
+            color: #34d399;
+        }
+
+        .low {
+            color: #fbbf24;
+        }
+
+        .extreme-time {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .extreme-height {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .weather-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .weather-item {
+            text-align: center;
+            padding: 12px;
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .weather-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #06b6d4;
+        }
+
+        .weather-label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        @keyframes glow {
+            0% { filter: drop-shadow(0 0 4px #34d399); }
+            100% { filter: drop-shadow(0 0 12px #34d399); }
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateY(0px) scaleY(1); }
+            50% { transform: translateY(-2px) scaleY(0.95); }
+        }
+
+        @media (max-width: 480px) {
+            .clock-container {
+                padding: 15px;
+            }
+            
+            .center-info {
+                width: 120px;
+                height: 120px;
+                padding: 15px;
+            }
+            
+            .current-height {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>🌊 Marées Rimouski</h1>
+            <div class="location-info">
+                <span>📍 Rimouski, QC</span>
+                <span>⏰ 14:32</span>
+                <span>🌡️ 4°C</span>
+            </div>
+        </div>
+
+        <div class="clock-container">
+            <svg class="tide-clock" viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#34d399;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="handGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                
+                <!-- Cercle principal -->
+                <circle cx="190" cy="190" r="160" class="clock-face"/>
+                
+                <!-- Points des heures -->
+                <g class="hour-markers">
+                    <!-- 12h -->
+                    <circle cx="190" cy="40" r="6" class="major-dots"/>
+                    <!-- 3h -->
+                    <circle cx="340" cy="190" r="6" class="major-dots"/>
+                    <!-- 6h -->
+                    <circle cx="190" cy="340" r="6" class="major-dots"/>
+                    <!-- 9h -->
+                    <circle cx="40" cy="190" r="6" class="major-dots"/>
+                    
+                    <!-- Points mineurs -->
+                    <circle cx="303" cy="77" r="3" class="hour-dots"/>
+                    <circle cx="303" cy="303" r="3" class="hour-dots"/>
+                    <circle cx="77" cy="303" r="3" class="hour-dots"/>
+                    <circle cx="77" cy="77" r="3" class="hour-dots"/>
+                </g>
+                
+                <!-- Effet de vague -->
+                <path d="M 50 190 Q 120 180 190 190 T 330 190" class="tide-wave"/>
+                
+                <!-- Marqueurs spéciaux -->
+                <circle cx="190" cy="40" r="10" class="high-tide-marker"/>
+                <circle cx="190" cy="340" r="8" class="low-tide-marker"/>
+                
+                <!-- Aiguille des marées -->
+                <line x1="190" y1="190" x2="190" y2="80" class="tide-hand"/>
+                <circle cx="190" cy="190" r="8" class="tide-hand-center"/>
+            </svg>
+            
+            <div class="center-info">
+                <div class="current-height">2.3m</div>
+                <div class="trend">↗️ Montante</div>
+            </div>
+        </div>
+
+        <div class="cards-container">
+            <div class="card">
+                <h3>🌊 Prochaines Marées</h3>
+                <div class="extremes-grid">
+                    <div class="extreme-item">
+                        <div class="extreme-type high">▲ HAUTE</div>
+                        <div class="extreme-time">14:32</div>
+                        <div class="extreme-height">3.2m</div>
+                    </div>
+                    <div class="extreme-item">
+                        <div class="extreme-type low">▼ BASSE</div>
+                        <div class="extreme-time">20:15</div>
+                        <div class="extreme-height">0.8m</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>🌤️ Conditions Marines</h3>
+                <div class="weather-grid">
+                    <div class="weather-item">
+                        <div class="weather-value">15 km/h</div>
+                        <div class="weather-label">💨 Vent</div>
+                    </div>
+                    <div class="weather-item">
+                        <div class="weather-value">0.5m</div>
+                        <div class="weather-label">🌊 Vagues</div>
+                    </div>
+                    <div class="weather-item">
+                        <div class="weather-value">6°C</div>
+                        <div class="weather-label">🌊 Eau</div>
+                    </div>
+                    <div class="weather-item">
+                        <div class="weather-value">8km</div>
+                        <div class="weather-label">👁️ Visibilité</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
