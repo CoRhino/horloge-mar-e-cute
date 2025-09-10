@@ -1,6 +1,6 @@
 # 🌊 Horloge des Marées - Rimouski
 
-> Une application web progressive **adorable et intuitive** pour suivre les marées à Rimouski, Québec! 🇨🇦
+> Une application web progressive **adorable et intuitive** pour suivre les marées à Rimouski, Québec! 🔵⚪🔵 🟡🔴🔵
 
 <div align="center">
   <img src="https://img.shields.io/badge/PWA-Ready-brightgreen?style=for-the-badge&logo=pwa" alt="PWA Ready">
@@ -123,13 +123,6 @@ Cette application est développée avec amour en utilisant des technologies mode
 - 🌍 **Ajouter une localité** : Aidez-nous à étendre la couverture
 - 📝 **Améliorer la doc** : Toute aide est bienvenue!
 
-## 📧 Contact et Support
-
-- 🌐 **Site web** : [https://marees-rimouski.vercel.app](https://marees-rimouski.vercel.app)
-- 📧 **Email** : support@marees-rimouski.com
-- 💬 **GitHub** : Ouvrez une issue pour questions techniques
-- 📱 **Feedback** : Utilisez le bouton feedback dans l'app
-
 ## 📜 Licence et Légal
 
 - **Licence** : MIT - Utilisez librement!
@@ -140,17 +133,17 @@ Cette application est développée avec amour en utilisant des technologies mode
 ---
 
 <div align="center">
-  <p><strong>Fait avec 💙 au Québec pour la communauté côtière canadienne</strong></p>
+  <p><strong>Fait avec 💙 au Québec et pour les communautés maritimes acadiennes</strong></p>
   <p>
     <a href="#-quest-ce-que-cest">🏠 Accueil</a> •
     <a href="#-fonctionnalités-principales">✨ Fonctionnalités</a> •
     <a href="#-comment-lutiliser">🚀 Utilisation</a> •
-    <a href="#-contact-et-support">📧 Contact</a>
+    <a href="#-développement-et-contribution">🛠️ Contribution</a>
   </p>
 </div>
 
 ## 🎉 Prêt à découvrir les marées autrement?
 
-**[🌊 Lancer l'application →](https://marees-rimouski.vercel.app)**
+**[🌊 Consultez la documentation technique pour plus d'informations](docs/)**
 
-*Aucune installation requise - fonctionne directement dans votre navigateur!*
+*Application en cours de développement - Suivez les progrès sur GitHub!*
