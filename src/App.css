@@ -318,6 +318,15 @@
   color: var(--color-text-muted);
   font-size: 0.8rem;
   text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.data-type {
+  font-size: 0.75rem;
+  color: var(--color-accent-blue);
+  opacity: 0.8;
 }
 
 /* Responsive design */

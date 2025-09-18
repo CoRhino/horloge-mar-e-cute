@@ -139,6 +139,11 @@ function App() {
           </div>
           <div className="data-source">
             <span>Données: Pêches et Océans Canada (DFO-MPO)</span>
+            <span className="data-type">
+              {tideData?.lastUpdated && new Date(tideData.lastUpdated).getTime() > Date.now() - 60000
+                ? '📡 API en temps réel'
+                : '📄 Données locales CSV'}
+            </span>
           </div>
         </div>
       </footer>

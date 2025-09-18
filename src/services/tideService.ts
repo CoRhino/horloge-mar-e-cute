@@ -13,6 +13,9 @@ export interface TideData {
   lastUpdated: string
 }
 
+// Import CSV service for local data fallback
+import { loadCSVTideData, isCSVDataAvailable } from './csvTideService'
+
 // DFO-MPO API configuration
 const DFO_API_BASE = 'https://api.waterlevels.gc.ca/api/v1'
 const RIMOUSKI_STATION_ID = '03360' // Rimouski station ID

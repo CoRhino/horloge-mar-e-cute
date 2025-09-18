@@ -83,16 +83,20 @@ public/
 ## 🌊 API et Données
 
 ### Source des Données
-- **API**: Pêches et Océans Canada (DFO-MPO)
-- **Station**: Rimouski (ID: 03360)
+- **API Primaire**: Pêches et Océans Canada (DFO-MPO)
+- **Données Locales**: Fichiers CSV de prédictions
+- **Station**: Rimouski (ID: 03360 / 02985)
 - **Type**: Prédictions de marées officielles
 - **Fréquence**: Mise à jour toutes les 15 minutes
+- **Fallback**: Données CSV locales si API indisponible
 
 ### Cache et Performance
 - Cache intelligent de 15 minutes
 - Mode hors ligne avec données de secours
+- **Support CSV local**: Lecture automatique des fichiers de prédictions
 - Gestion d'erreur avec retry automatique
 - Interpolation en temps réel entre les prédictions
+- **Priorité CSV**: Utilise les données locales en premier si disponibles
 
 ## 🎨 Design et UX
 
@@ -140,6 +144,27 @@ VITE_DFO_API_URL=https://api.waterlevels.gc.ca/api/v1
 # Optionnel: ID de station personnalisé
 VITE_STATION_ID=03360
 ```
+
+### Données CSV Locales
+Placez vos fichiers CSV de prédictions dans `public/prediction/`:
+```
+public/prediction/prédictions_02985_Rimouski_YYYY-MM-DD.csv
+```
+
+**Format CSV attendu:**
+```csv
+Date,prédictions (m)
+Généré le YYYY-MM-DD,Information sur les prédictions
+YYYY-MM-DD HH:MM,niveau.decimal
+...
+```
+
+**Fonctionnalités CSV:**
+- Auto-détection des fichiers du jour
+- Parsing intelligent des formats de date
+- Calcul automatique des marées hautes/basses
+- Interpolation des niveaux actuels
+- Détection de tendance
 
 ### Personnalisation
 - Couleurs dans `src/index.css` (variables CSS)
